@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteRule (.*/)$ sindexOrginal.php?p=$1
+RewriteRule ^$ sindexOrginal.php
