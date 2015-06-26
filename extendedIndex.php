@@ -86,7 +86,7 @@ function printFooter() {
 }
 
 function currentPath() {
-	return rtrim(dirname($_SERVER["SCRIPT_NAME"]) . "/" . ltrim($_GET["p"], "/"), "/");
+	return rtrim(dirname($_SERVER["SCRIPT_NAME"]) . "/" . (empty($_GET["p"]) ? "" : ltrim($_GET["p"], "/")) , "/");
 }
 
 function parentDirectory() {
@@ -175,7 +175,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	}
 	
 	echo "\t</tr>\n";
-
+    $class = "even";
 	foreach ($files as $index => $file) {
 		$name     = basename($file);
 		$url      = currentPath() . "/" . rawurlencode($name);
