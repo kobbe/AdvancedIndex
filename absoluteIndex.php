@@ -11,6 +11,12 @@
 //               http://jomppa.net/
 //
 
+//Absolute index made by Hans Koberg
+
+//ini_set('display_errors',1);
+//ini_set('display_startup_errors',1);
+//error_reporting(-1);
+
 main();
 
 function main() {
@@ -25,7 +31,7 @@ function main() {
 
 	$path      = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
 	$sort      = !empty($args["s"]) && in_array($args["s"], array("n", "s", "m")) ? $args["s"] : "n";
-	$direction = !empty($args["d"]) && $args["d"] == "d" ? SORT_DESC : SORT_ASC;
+	$direction = $args["d"] == "d" ? SORT_DESC : SORT_ASC;
 
 	header("Content-Type: text/html; charset=utf-8");
 	printHeader();
@@ -33,7 +39,8 @@ function main() {
 		$path,
 		"*",
 		array(
-			basename(__FILE__)
+			basename(__FILE__),
+			"tail.php"
 		),
 		$sort,
 		$direction
@@ -148,7 +155,11 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	$labels = array(
 		"n" => "Name",
 		"s" => "Size",
-		"m" => "Modified"
+		"m" => "Modified",
+        "a" => "Absolute time",
+		"t1" => "10 tail",
+		"t2" => "100 tail",
+		"t3" => "custom tail"
 	);
 	
 	foreach ($labels as $key => $label) {
@@ -175,6 +186,10 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 		$icon     = $isDir ? $iconDir    : $iconFile;
 		$size     = $isDir ? "-"         : formatSize($sizes[$index]);
 		$modified = date("Y-m-d H:i:s", $timestamps[$index]);
+        $now      = new DateTime();
+        $modifiedAsDate = new DateTime();
+        $modifiedAsDate->setTimestamp($timestamps[$index]);
+        $absmodified = $now->diff($modifiedAsDate)->format("Senast ändrad: %d dagar, %h timmar och %i minuter");
 		$class    = $class == "even" ? "odd" : "even";
 		
 		echo "\t<tr class=\"$class\">\n" .
@@ -182,6 +197,29 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 			 "\t\t<td><a href=\"$url\">$name</a></td>\n" .
 			 "\t\t<td><small>$size</small></td>\n" .
 			 "\t\t<td><small>$modified</small></td>\n" .
+            		 "\t\t<td><small>$absmodified</small></td>\n" .
+			 "\t\t<td> 
+				<form action=\"tail.php\" method=\"post\" STYLE=\"margin: 0px; padding: 0px;\">
+				<input type=\"hidden\" name=\"fileName\" value=\"$name\">
+				 <input type=\"hidden\" name=\"tail\" value=\"10\">
+				<input type=\"submit\" value=\"Tail\">
+				</form>
+				</td>\n" .
+             "\t\t<td> 
+				<form action=\"tail.php\" method=\"post\" STYLE=\"margin: 0px; padding: 0px;\">
+				<input type=\"hidden\" name=\"fileName\" value=\"$name\">
+				 <input type=\"hidden\" name=\"tail\" value=\"100\">
+				<input type=\"submit\" value=\"Tail\">
+				</form>
+				</td>\n" .
+             "\t\t<td> 
+				<form action=\"tail.php\" method=\"post\" STYLE=\"margin: 0px; padding: 0px;\">
+				<input type=\"hidden\" name=\"fileName\" value=\"$name\">
+				 <input type=\"text\" name=\"tail\" value=\"100\">
+				<input type=\"submit\" value=\"Tail\">
+				</form>
+				</td>\n" .
+                
 			 "\t</tr>\n";
 	}
 
