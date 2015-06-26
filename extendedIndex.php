@@ -29,7 +29,7 @@ function main() {
 
 	$path      = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
 	$sort      = !empty($args["s"]) && in_array($args["s"], array("n", "s", "m")) ? $args["s"] : "n";
-	$direction = $args["d"] == "d" ? SORT_DESC : SORT_ASC;
+	$direction = !empty($args["d"]) && $args["d"] == "d" ? SORT_DESC : SORT_ASC;
 
 	header("Content-Type: text/html; charset=utf-8");
 	printHeader();
