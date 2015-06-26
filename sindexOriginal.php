@@ -81,7 +81,7 @@ function printFooter() {
 }
 
 function currentPath() {
-	return rtrim(dirname($_SERVER["SCRIPT_NAME"]) . "/" . empty($args["p"]) ? "" : ltrim($_GET["p"], "/"), "/");
+	return rtrim(dirname($_SERVER["SCRIPT_NAME"]) . "/" . empty($_GET["p"]) ? "" : ltrim($_GET["p"], "/"), "/");
 }
 
 function parentDirectory() {
