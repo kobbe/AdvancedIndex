@@ -37,8 +37,7 @@ function main() {
 		$path,
 		"*",
 		array(
-			basename(__FILE__),
-			"tail.php"
+			basename(__FILE__)
 		),
 		$sort,
 		$direction
@@ -143,7 +142,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	$iconAsc  = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAGklEQVR42mJgZGRkgGAGBhABohigJBAABBgAATAADUnnWMkAAAAASUVORK5CYII=";
 	$iconDesc = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAF0lEQVR42mJggAJGKMkIYjCCaDAGCDAAAJAADcpaiWkAAAAASUVORK5CYII=";
 	
-	$parent = explode("/", currentPath());
+	#$parent = explode("/", currentPath());
 	
 	echo "<h1><a href=\"" . currentPath() . "\">Index of " . currentPath() . "</a></h1>\n";
 	echo "<p><a href=\"" . parentDirectory() . "\">&larr; Parent directory</a></p>\n";
