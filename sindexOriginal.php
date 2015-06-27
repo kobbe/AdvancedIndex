@@ -114,7 +114,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	// name
 	case "n":
 	default:
-		array_multisort($files, $direction,SORT_STRING, $sizes, $timestamps);
+		array_multisort($files, $direction, SORT_NATURAL, $sizes, $timestamps);
 		break;
 	}
 			
