@@ -1,28 +1,12 @@
 <?php
 
+//Index page made by Hans Koberg - hans@koberg.nu - 2015
 //
-// Simple Index - sindex.php
-//
-// Project home: http://jomppa.net/projects/simple-index/
-//      Version: 0.1
-//         Date: 2011-02-20
-//       Author: Joni Rantala 2011
-//               joni@jonirantala.fi
-//               http://jomppa.net/
-//
+//built from the (crap coding) Simple Index - sindex.php made by Joni Rantala 2011
 
 main();
 
 function main() {
-	/*$args = &$_GET;
-    
-	if (empty($_GET["s"])) {
-		$uri = $_SERVER["REQUEST_URI"];
-		if (($pos = strpos($uri, "?")) !== false) {
-			parse_str(substr($uri, $pos + 1), $a);
-			$args = &$a;
-		}
-	}*/
 
 	$path      = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
 	$sort      = !empty($_GET["s"]) && in_array($_GET["s"], array("n", "s", "m")) ? $_GET["s"] : "n";
@@ -49,7 +33,7 @@ function printHeader() {
 <head>
 <title>Index of <?php echo currentPath(); ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Simple Index v0.1 - http://jomppa.net/projects/sindex/">
+<meta name="generator" content="Index page made by Hans Koberg with base by Joni Rantala">
 <style type="text/css">
 body         { margin: 20px; padding: 0; background: #cccccc; }
 a            { color: #0088ff; }
@@ -130,7 +114,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	// name
 	case "n":
 	default:
-		array_multisort($files, $direction, $sizes, $timestamps);
+		array_multisort($files, $direction,SORT_STRING, $sizes, $timestamps);
 		break;
 	}
 			
