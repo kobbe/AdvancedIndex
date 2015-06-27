@@ -14,7 +14,7 @@
 main();
 
 function main() {
-	$args = &$_GET;
+	$args = $_GET;
 	if (empty($_GET["s"])) {
 		$uri = $_SERVER["REQUEST_URI"];
 		if (($pos = strpos($uri, "?")) !== false) {
