@@ -24,8 +24,8 @@ function main() {
 	}*/
 
 	$path      = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
-	$sort      = !empty($$_GET["s"]) && in_array($$_GET["s"], array("n", "s", "m")) ? $$_GET["s"] : "n";
-	$direction = !empty($$_GET["d"]) && $$_GET["d"] == "d" ? SORT_DESC : SORT_ASC;
+	$sort      = !empty($_GET["s"]) && in_array($_GET["s"], array("n", "s", "m")) ? $_GET["s"] : "n";
+	$direction = !empty($_GET["d"]) && $_GET["d"] == "d" ? SORT_DESC : SORT_ASC;
 
 	header("Content-Type: text/html; charset=utf-8");
 	printHeader();
