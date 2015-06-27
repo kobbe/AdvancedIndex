@@ -1,3 +1,4 @@
 RewriteEngine On
-RewriteRule (.*/)$ sindexOrginal.php?p=$1
-RewriteRule ^$ sindexOrginal.php
+#Perserves the query string and sets the path last to override user paths.
+RewriteRule (.*/)$ sindexOrginal.php?%{QUERY_STRING}&p=$1
+RewriteRule ^$ sindexOrginal.php?%{QUERY_STRING}
