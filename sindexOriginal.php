@@ -14,18 +14,19 @@
 main();
 
 function main() {
-	$args = $_GET;
+	$args = &$_GET;
+    /*
 	if (empty($_GET["s"])) {
 		$uri = $_SERVER["REQUEST_URI"];
 		if (($pos = strpos($uri, "?")) !== false) {
 			parse_str(substr($uri, $pos + 1), $a);
 			$args = &$a;
 		}
-	}
+	}*/
 
 	$path      = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
 	$sort      = !empty($args["s"]) && in_array($args["s"], array("n", "s", "m")) ? $args["s"] : "n";
-	$direction = !empty($_GET["d"]) && $_GET["d"] == "d" ? SORT_DESC : SORT_ASC;
+	$direction = !empty($args["d"]) && $args["d"] == "d" ? SORT_DESC : SORT_ASC;
 
 	header("Content-Type: text/html; charset=utf-8");
 	printHeader();
