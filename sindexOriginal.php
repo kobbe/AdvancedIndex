@@ -8,12 +8,12 @@ main();
 
 function main() {
 
-	$path      = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
+	$path      = !empty($_GET["p"]) ? "{$_GET["p"]}" : "./"; #TODO: bullshit location if wrong!
 	$sort      = !empty($_GET["s"]) && in_array($_GET["s"], array("n", "s", "m")) ? $_GET["s"] : "n";
 	$direction = !empty($_GET["d"]) && $_GET["d"] == "d" ? SORT_DESC : SORT_ASC;
 
 	header("Content-Type: text/html; charset=utf-8");
-	printHeader();
+	printHeader($path);
 	printFileListing(
 		$path,
 		"*",
@@ -26,12 +26,12 @@ function main() {
 	printFooter();
 }
 
-function printHeader() {
+function printHeader($path) {
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Index of <?php echo currentPath(); ?></title>
+<title>Index of <?php echo $path; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Index page made by Hans Koberg with base by Joni Rantala">
 <style type="text/css">
@@ -69,8 +69,8 @@ function currentPath() {
 	return rtrim(dirname($_SERVER["SCRIPT_NAME"]) . "/" . (empty($_GET["p"]) ? "" : ltrim($_GET["p"], "/")) , "/");
 }
 
-function parentDirectory() {
-	$path = currentPath();
+function parentDirectory($path) {
+	//$path = currentPath();
 	$path = substr($path, 0, strrpos($path, "/"));
 
 	return $path == "" ? "/" : $path;
@@ -114,7 +114,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	// name
 	case "n":
 	default:
-		array_multisort($files, $direction, SORT_NATURAL, $sizes, $timestamps);
+		array_multisort($files, $direction, $sizes, $timestamps);
 		break;
 	}
 			
@@ -125,8 +125,8 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	
 	#$parent = explode("/", currentPath());
 	
-	echo "<h1><a href=\"" . currentPath() . "\">Index of " . currentPath() . "</a></h1>\n";
-	echo "<p><a href=\"" . parentDirectory() . "\">&larr; Parent directory</a></p>\n";
+	echo "<h1><a href=\"" . $path . "\">Index of " . $path . "</a></h1>\n";
+	echo "<p><a href=\"" . parentDirectory($path) . "\">&larr; Parent directory</a></p>\n";
 	echo "<table>\n";
 	echo "\t<tr>\n\t\t<th></th>\n";
 	
@@ -154,7 +154,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
     $class = "even";
 	foreach ($files as $index => $file) {
 		$name     = basename($file);
-		$url      = currentPath() . "/" . rawurlencode($name);
+		$url      = $path . "/" . rawurlencode($name);
 		$isDir    = is_dir($file);
 		$type     = $isDir ? "Directory" : "File";
 		$icon     = $isDir ? $iconDir    : $iconFile;
