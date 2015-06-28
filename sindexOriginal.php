@@ -83,7 +83,7 @@ function formatSize($size) {
 }
 
 function printFileListing($path = "./", $pattern = "*", $excluded = array(), $sort = "n", $direction = SORT_ASC) {
-	$files = glob($_SERVER["DOCUMENT_ROOT"] . $path$ . pattern);
+	$files = glob($_SERVER["DOCUMENT_ROOT"] . $path . $pattern);
 	
 	$sizes      = array();
 	$timestamps = array();
