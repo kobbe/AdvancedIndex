@@ -83,7 +83,7 @@ function formatSize($size) {
 }
 
 function printFileListing($path = "./", $pattern = "*", $excluded = array(), $sort = "n", $direction = SORT_ASC) {
-    $pathNoSlash = rtrim($path,"/")
+    $pathNoSlash = rtrim($path,"/");
 
 	$files = glob($_SERVER["DOCUMENT_ROOT"] . $path . $pattern);
 	
