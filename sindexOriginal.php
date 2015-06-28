@@ -83,6 +83,8 @@ function formatSize($size) {
 }
 
 function printFileListing($path = "./", $pattern = "*", $excluded = array(), $sort = "n", $direction = SORT_ASC) {
+    $pathNoSlash = rtrim($path,"/")
+
 	$files = glob($_SERVER["DOCUMENT_ROOT"] . $path . $pattern);
 	
 	$sizes      = array();
@@ -124,7 +126,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	$iconDesc = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAF0lEQVR42mJggAJGKMkIYjCCaDAGCDAAAJAADcpaiWkAAAAASUVORK5CYII=";
 	
 	#$parent = explode("/", currentPath());
-	echo "<h1><a href=\"" . rtrim($path,"/") . "\">Index of " . $path . "</a></h1>\n";
+	echo "<h1><a href=\"" . $pathNoSlash . "\">Index of " . $pathNoSlash . "</a></h1>\n";
 	echo "<p><a href=\"" . parentDirectory($path) . "\">&larr; Parent directory</a></p>\n";
 	echo "<table>\n";
 	echo "\t<tr>\n\t\t<th></th>\n";
