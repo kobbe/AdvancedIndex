@@ -1,32 +1,19 @@
 <?php
 
+//Index page made by Hans Koberg - hans@koberg.nu - 2015
 //
-// Simple Index - sindex.php
-//
-// Project home: http://jomppa.net/projects/simple-index/
-//      Version: 0.1
-//         Date: 2011-02-20
-//       Author: Joni Rantala 2011
-//               joni@jonirantala.fi
-//               http://jomppa.net/
-//
-
-//Absolute index made by Hans Koberg
-
-//ini_set('display_errors',1);
-//ini_set('display_startup_errors',1);
-//error_reporting(-1);
+//built from the (crap coding) Simple Index - sindex.php made by Joni Rantala 2011
 
 main();
 
 function main() {
 
-	$path      = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
+	$path      = !empty($_GET["p"]) ? "{$_GET["p"]}" : "./"; #TODO: bullshit location if wrong!
 	$sort      = !empty($_GET["s"]) && in_array($_GET["s"], array("n", "s", "m")) ? $_GET["s"] : "n";
 	$direction = !empty($_GET["d"]) && $_GET["d"] == "d" ? SORT_DESC : SORT_ASC;
 
 	header("Content-Type: text/html; charset=utf-8");
-	printHeader();
+	printHeader($path);
 	printFileListing(
 		$path,
 		"*",
@@ -39,14 +26,14 @@ function main() {
 	printFooter();
 }
 
-function printHeader() {
+function printHeader($path) {
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Index of <?php echo currentPath(); ?></title>
+<title>Index of <?php echo $path; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Simple Index v0.1 - http://jomppa.net/projects/sindex/">
+<meta name="generator" content="Index page made by Hans Koberg with base by Joni Rantala">
 <style type="text/css">
 body         { margin: 20px; padding: 0; background: #cccccc; }
 a            { color: #0088ff; }
@@ -82,8 +69,8 @@ function currentPath() {
 	return rtrim(dirname($_SERVER["SCRIPT_NAME"]) . "/" . (empty($_GET["p"]) ? "" : ltrim($_GET["p"], "/")) , "/");
 }
 
-function parentDirectory() {
-	$path = currentPath();
+function parentDirectory($path) {
+	//$path = currentPath();
 	$path = substr($path, 0, strrpos($path, "/"));
 
 	return $path == "" ? "/" : $path;
@@ -96,7 +83,9 @@ function formatSize($size) {
 }
 
 function printFileListing($path = "./", $pattern = "*", $excluded = array(), $sort = "n", $direction = SORT_ASC) {
-	$files = glob("$path$pattern");
+    $pathNoSlash = rtrim($path,"/");
+
+	$files = glob($_SERVER["DOCUMENT_ROOT"] . $path . $pattern);
 	
 	$sizes      = array();
 	$timestamps = array();
@@ -137,20 +126,15 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	$iconDesc = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAF0lEQVR42mJggAJGKMkIYjCCaDAGCDAAAJAADcpaiWkAAAAASUVORK5CYII=";
 	
 	#$parent = explode("/", currentPath());
-	
-	echo "<h1><a href=\"" . currentPath() . "\">Index of " . currentPath() . "</a></h1>\n";
-	echo "<p><a href=\"" . parentDirectory() . "\">&larr; Parent directory</a></p>\n";
+	echo "<h1><a href=\"" . $pathNoSlash . "\">Index of " . $pathNoSlash . "</a></h1>\n";
+	echo "<p><a href=\"" . parentDirectory($path) . "\">&larr; Parent directory</a></p>\n";
 	echo "<table>\n";
 	echo "\t<tr>\n\t\t<th></th>\n";
 	
 	$labels = array(
 		"n" => "Name",
 		"s" => "Size",
-		"m" => "Modified",
-        "a" => "Absolute time",
-		"t1" => "10 tail",
-		"t2" => "100 tail",
-		"t3" => "custom tail"
+		"m" => "Modified"
 	);
 	
 	foreach ($labels as $key => $label) {
@@ -171,16 +155,12 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
     $class = "even";
 	foreach ($files as $index => $file) {
 		$name     = basename($file);
-		$url      = currentPath() . "/" . rawurlencode($name);
+		$url      = $path . rawurlencode($name);
 		$isDir    = is_dir($file);
 		$type     = $isDir ? "Directory" : "File";
 		$icon     = $isDir ? $iconDir    : $iconFile;
 		$size     = $isDir ? "-"         : formatSize($sizes[$index]);
 		$modified = date("Y-m-d H:i:s", $timestamps[$index]);
-        $now      = new DateTime();
-        $modifiedAsDate = new DateTime();
-        $modifiedAsDate->setTimestamp($timestamps[$index]);
-        $absmodified = $now->diff($modifiedAsDate)->format("Senast ändrad: %d dagar, %h timmar och %i minuter");
 		$class    = $class == "even" ? "odd" : "even";
 		
 		echo "\t<tr class=\"$class\">\n" .
@@ -188,29 +168,6 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 			 "\t\t<td><a href=\"$url\">$name</a></td>\n" .
 			 "\t\t<td><small>$size</small></td>\n" .
 			 "\t\t<td><small>$modified</small></td>\n" .
-            		 "\t\t<td><small>$absmodified</small></td>\n" .
-			 "\t\t<td> 
-				<form action=\"tail.php\" method=\"post\" STYLE=\"margin: 0px; padding: 0px;\">
-				<input type=\"hidden\" name=\"fileName\" value=\"$name\">
-				 <input type=\"hidden\" name=\"tail\" value=\"10\">
-				<input type=\"submit\" value=\"Tail\">
-				</form>
-				</td>\n" .
-             "\t\t<td> 
-				<form action=\"tail.php\" method=\"post\" STYLE=\"margin: 0px; padding: 0px;\">
-				<input type=\"hidden\" name=\"fileName\" value=\"$name\">
-				 <input type=\"hidden\" name=\"tail\" value=\"100\">
-				<input type=\"submit\" value=\"Tail\">
-				</form>
-				</td>\n" .
-             "\t\t<td> 
-				<form action=\"tail.php\" method=\"post\" STYLE=\"margin: 0px; padding: 0px;\">
-				<input type=\"hidden\" name=\"fileName\" value=\"$name\">
-				 <input type=\"text\" name=\"tail\" value=\"100\">
-				<input type=\"submit\" value=\"Tail\">
-				</form>
-				</td>\n" .
-                
 			 "\t</tr>\n";
 	}
 

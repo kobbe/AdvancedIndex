@@ -8,14 +8,16 @@ main();
 
 function main() {
 
-	$path      = !empty($_GET["p"]) ? "{$_GET["p"]}" : "./"; #TODO: bullshit location if wrong!
-	$sort      = !empty($_GET["s"]) && in_array($_GET["s"], array("n", "s", "m")) ? $_GET["s"] : "n";
-	$direction = !empty($_GET["d"]) && $_GET["d"] == "d" ? SORT_DESC : SORT_ASC;
+	$realtivePath = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
+    $absPath      =
+	$sort         = !empty($_GET["s"]) && in_array($_GET["s"], array("n", "s", "m")) ? $_GET["s"] : "n";
+	$direction    = !empty($_GET["d"]) && $_GET["d"] == "d" ? SORT_DESC : SORT_ASC;
 
 	header("Content-Type: text/html; charset=utf-8");
-	printHeader($path);
+	printHeader($abspath);
 	printFileListing(
-		$path,
+		$realtivePath, 
+        $absPath,
 		"*",
 		array(
 			basename(__FILE__)
@@ -26,12 +28,12 @@ function main() {
 	printFooter();
 }
 
-function printHeader($path) {
+function printHeader($abspath) {
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Index of <?php echo $path; ?></title>
+<title>Index of <?php echo $abspath; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Index page made by Hans Koberg with base by Joni Rantala">
 <style type="text/css">
@@ -65,11 +67,11 @@ function printFooter() {
 <?php
 }
 
-function currentPath() {
+function absPath() {
 	return rtrim(dirname($_SERVER["SCRIPT_NAME"]) . "/" . (empty($_GET["p"]) ? "" : ltrim($_GET["p"], "/")) , "/");
 }
 
-function parentDirectory($path) {
+function parentDirectory($abspath) {
 	//$path = currentPath();
 	$path = substr($path, 0, strrpos($path, "/"));
 
@@ -82,10 +84,8 @@ function formatSize($size) {
     return round($size, 2) . " " . $units[$i];
 }
 
-function printFileListing($path = "./", $pattern = "*", $excluded = array(), $sort = "n", $direction = SORT_ASC) {
-    $pathNoSlash = rtrim($path,"/");
-
-	$files = glob($_SERVER["DOCUMENT_ROOT"] . $path . $pattern);
+function printFileListing($path = "./", $absPath, $pattern = "*", $excluded = array(), $sort = "n", $direction = SORT_ASC) {
+	$files = glob("$path$pattern");
 	
 	$sizes      = array();
 	$timestamps = array();
@@ -126,7 +126,8 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	$iconDesc = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAF0lEQVR42mJggAJGKMkIYjCCaDAGCDAAAJAADcpaiWkAAAAASUVORK5CYII=";
 	
 	#$parent = explode("/", currentPath());
-	echo "<h1><a href=\"" . $pathNoSlash . "\">Index of " . $pathNoSlash . "</a></h1>\n";
+	
+	echo "<h1><a href=\"" . $path . "\">Index of " . $path . "</a></h1>\n";
 	echo "<p><a href=\"" . parentDirectory($path) . "\">&larr; Parent directory</a></p>\n";
 	echo "<table>\n";
 	echo "\t<tr>\n\t\t<th></th>\n";
@@ -155,7 +156,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
     $class = "even";
 	foreach ($files as $index => $file) {
 		$name     = basename($file);
-		$url      = $path . rawurlencode($name);
+		$url      = $path . "/" . rawurlencode($name);
 		$isDir    = is_dir($file);
 		$type     = $isDir ? "Directory" : "File";
 		$icon     = $isDir ? $iconDir    : $iconFile;
