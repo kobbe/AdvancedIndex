@@ -1,3 +1,5 @@
+php_flag engine off
+AddType text/plain php py
 RewriteEngine On
 #Perserves the query string and sets the path last to override user paths.
 RewriteRule (^$|.*/$) /functions/noRead/advancedIndex/absoluteIndex.php?%{QUERY_STRING}&p=%{REQUEST_URI}
