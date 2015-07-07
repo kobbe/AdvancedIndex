@@ -123,7 +123,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	$iconAsc  = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAGklEQVR42mJgZGRkgGAGBhABohigJBAABBgAATAADUnnWMkAAAAASUVORK5CYII=";
 	$iconDesc = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAF0lEQVR42mJggAJGKMkIYjCCaDAGCDAAAJAADcpaiWkAAAAASUVORK5CYII=";
 	
-	echo "<h1><a href=\"" . $pathNoSlash . "\">Index of " . $pathNoSlash != "" ? $path : "/" . "</a></h1>\n";
+	echo "<h1><a href=\"" . $pathNoSlash . "\">Index of " . ($pathNoSlash != "" ? $path : "/") . "</a></h1>\n";
     
     $parentLink = "?p=" .parentDirectory($pathNoSlash);
     $parentLink .= $direction == SORT_DESC ? "&amp;d=d" : "";
