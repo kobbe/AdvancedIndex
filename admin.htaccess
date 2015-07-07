@@ -6,4 +6,4 @@ AuthType Basic
 AddType text/plain py
 RewriteEngine On
 #Perserves the query string and sets the path last to override user paths.
-RewriteRule (^$|.*/$) /functions/noRead/advancedIndex/adminIndex.php?%{QUERY_STRING}&p=%{REQUEST_URI}
+RewriteRule ^$ /functions/noRead/advancedIndex/adminIndex.php?%{QUERY_STRING}
