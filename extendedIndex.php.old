@@ -1,19 +1,30 @@
 <?php
 
-//Index page made by Hans Koberg - hans@koberg.nu - 2015
 //
-//built from the (crap coding) Simple Index - sindex.php made by Joni Rantala 2011
+// Simple Index - sindex.php
+//
+// Project home: http://jomppa.net/projects/simple-index/
+//      Version: 0.1
+//         Date: 2011-02-20
+//       Author: Joni Rantala 2011
+//               joni@jonirantala.fi
+//               http://jomppa.net/
+//
+
+//ini_set('display_errors',1);
+//ini_set('display_startup_errors',1);
+//error_reporting(-1);
 
 main();
 
 function main() {
 
-	$path      = !empty($_GET["p"]) ? "{$_GET["p"]}" : "./"; #TODO: bullshit location if wrong!
-	$sort      = !empty($_GET["s"]) && in_array($_GET["s"], array("n", "s", "m", "a", "t1", "t2", "t3")) ? $_GET["s"] : "n";
+	$path      = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
+	$sort      = !empty($_GET["s"]) && in_array($_GET["s"], array("n", "s", "m")) ? $_GET["s"] : "n";
 	$direction = !empty($_GET["d"]) && $_GET["d"] == "d" ? SORT_DESC : SORT_ASC;
 
 	header("Content-Type: text/html; charset=utf-8");
-	printHeader($path);
+	printHeader();
 	printFileListing(
 		$path,
 		"*",
@@ -26,14 +37,14 @@ function main() {
 	printFooter();
 }
 
-function printHeader($path) {
+function printHeader() {
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Index of <?php echo $path; ?></title>
+<title>Index of <?php echo currentPath(); ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Index page made by Hans Koberg with base by Joni Rantala">
+<meta name="generator" content="Simple Index v0.1 - http://jomppa.net/projects/sindex/">
 <style type="text/css">
 body         { margin: 20px; padding: 0; background: #cccccc; }
 a            { color: #0088ff; }
@@ -65,7 +76,12 @@ function printFooter() {
 <?php
 }
 
-function parentDirectory($path) {
+function currentPath() {
+	return rtrim(dirname($_SERVER["SCRIPT_NAME"]) . "/" . (empty($_GET["p"]) ? "" : ltrim($_GET["p"], "/")) , "/");
+}
+
+function parentDirectory() {
+	$path = currentPath();
 	$path = substr($path, 0, strrpos($path, "/"));
 
 	return $path == "" ? "/" : $path;
@@ -78,19 +94,13 @@ function formatSize($size) {
 }
 
 function printFileListing($path = "./", $pattern = "*", $excluded = array(), $sort = "n", $direction = SORT_ASC) {
-    $pathNoSlash = rtrim($path,"/");
-
-	$files = glob($_SERVER["DOCUMENT_ROOT"] . $path . $pattern);
+	$files = glob("$path$pattern");
 	
 	$sizes      = array();
 	$timestamps = array();
-    $absmodified= array();
 	
 	if (!is_array($files)) $files = array();
 	
-    
-    $now = new DateTime();
-        
 	foreach ($files as $index => $file) {
 		foreach ($excluded as $regexPattern) {
 			if (preg_match("@$regexPattern@", $file)) {
@@ -99,13 +109,8 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 			}
 		}
 	
-        $modifiedAsDate = new DateTime();
-        $modifiedAsDate->setTimestamp(filemtime($file));
-    
 		$sizes[]      = filesize($file);
 		$timestamps[] = filemtime($file);
-        $absmodified[]= $now->diff($modifiedAsDate)->format("Senast ändrad: %d dagar, %h timmar och %i minuter");
-        
 	}
 	
 	switch ($sort) {
@@ -117,9 +122,6 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	case "m":
 		array_multisort($timestamps, $direction, $files, $sizes);
 		break;
-    case "a":
-		array_multisort($timestamps, $direction, $files, $sizes);
-		break;         
 	// name
 	case "n":
 	default:
@@ -132,8 +134,10 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	$iconAsc  = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAGklEQVR42mJgZGRkgGAGBhABohigJBAABBgAATAADUnnWMkAAAAASUVORK5CYII=";
 	$iconDesc = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAF0lEQVR42mJggAJGKMkIYjCCaDAGCDAAAJAADcpaiWkAAAAASUVORK5CYII=";
 	
-	echo "<h1><a href=\"" . $pathNoSlash . "\">Index of " . $pathNoSlash . "</a></h1>\n";
-	echo "<p><a href=\"" . parentDirectory($path) . "\">&larr; Parent directory</a></p>\n";
+	#$parent = explode("/", currentPath());
+	
+	echo "<h1><a href=\"" . currentPath() . "\">Index of " . currentPath() . "</a></h1>\n";
+	echo "<p><a href=\"" . parentDirectory() . "\">&larr; Parent directory</a></p>\n";
 	echo "<table>\n";
 	echo "\t<tr>\n\t\t<th></th>\n";
 	
@@ -165,13 +169,16 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
     $class = "even";
 	foreach ($files as $index => $file) {
 		$name     = basename($file);
-		$url      = $path . rawurlencode($name);
+		$url      = currentPath() . "/" . rawurlencode($name);
 		$isDir    = is_dir($file);
 		$type     = $isDir ? "Directory" : "File";
 		$icon     = $isDir ? $iconDir    : $iconFile;
 		$size     = $isDir ? "-"         : formatSize($sizes[$index]);
 		$modified = date("Y-m-d H:i:s", $timestamps[$index]);
-        $amodifed = absmodified[$index];
+        $now      = new DateTime();
+        $modifiedAsDate = new DateTime();
+        $modifiedAsDate->setTimestamp($timestamps[$index]);
+        $absmodified = $now->diff($modifiedAsDate)->format("Senast ändrad: %d dagar, %h timmar och %i minuter");
 		$class    = $class == "even" ? "odd" : "even";
 		
 		echo "\t<tr class=\"$class\">\n" .
@@ -179,7 +186,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 			 "\t\t<td><a href=\"$url\">$name</a></td>\n" .
 			 "\t\t<td><small>$size</small></td>\n" .
 			 "\t\t<td><small>$modified</small></td>\n" .
-            		 "\t\t<td><small>$amodifed</small></td>\n" .
+            		 "\t\t<td><small>$absmodified</small></td>\n" .
 			 "\t\t<td> 
 				<form action=\"tail.php\" method=\"post\" STYLE=\"margin: 0px; padding: 0px;\">
 				<input type=\"hidden\" name=\"fileName\" value=\"$name\">
