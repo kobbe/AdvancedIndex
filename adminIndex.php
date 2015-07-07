@@ -125,7 +125,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	
 	echo "<h1><a href=\"" . $pathNoSlash . "\">Index of " . $pathNoSlash . "</a></h1>\n";
     
-    $parentLink = "?p=" .parentDirectory($path);
+    $parentLink = "?p=" .parentDirectory($pathNoSlash);
     $parentLink .= $direction == SORT_DESC ? "&amp;d=d" : "";
     $parentLink .= $sort != "n" ? "&amp;s=$sort" : "";
     
