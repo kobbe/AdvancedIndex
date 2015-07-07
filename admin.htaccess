@@ -1,0 +1,9 @@
+AuthName "Limited Area"
+Require valid-user
+AuthUserFile /etc/apache2/stuff
+AuthType Basic
+#php_flag engine off
+AddType text/plain py
+RewriteEngine On
+#Perserves the query string and sets the path last to override user paths.
+RewriteRule (^$|.*/$) /functions/noRead/advancedIndex/adminIndex.php?%{QUERY_STRING}&p=%{REQUEST_URI}
