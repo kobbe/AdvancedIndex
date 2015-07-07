@@ -11,12 +11,12 @@ main();
 function main() {
 
 	$realtivePath = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
-    $absPath      = absPath($realtivePath);
+    $absPath      = absPathFromRel($realtivePath);
 	$sort         = !empty($_GET["s"]) && in_array($_GET["s"], array("n", "s", "m")) ? $_GET["s"] : "n";
 	$direction    = !empty($_GET["d"]) && $_GET["d"] == "d" ? SORT_DESC : SORT_ASC;
 
 	header("Content-Type: text/html; charset=utf-8");
-	printHeader($abspath);
+	printHeader($absPath);
 	printFileListing(
 		$realtivePath, 
         $absPath,
@@ -30,12 +30,12 @@ function main() {
 	printFooter();
 }
 
-function printHeader($abspath) {
+function printHeader($absPath) {
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Index of <?php echo $abspath; ?></title>
+<title>Index of <?php echo $absPath; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Index page made by Hans Koberg with base by Joni Rantala">
 <style type="text/css">
@@ -69,15 +69,15 @@ function printFooter() {
 <?php
 }
 
-function absPath($path) {
+function absPathFromRel($path) {
 	return rtrim(dirname($_SERVER["SCRIPT_NAME"]) . "/" . $path , "/");
 }
 
-function parentDirectory($abspath) {
+function parentDirectory($absPath) {
 	//$path = currentPath();
-	$abspath = substr($abspath, 0, strrpos($abspath, "/"));
+	$absPath = substr($absPath, 0, strrpos($absPath, "/"));
 
-	return $abspath == "" ? "/" : $abspath;
+	return $absPath == "" ? "/" : $absPath;
 }
 
 function formatSize($size) {
@@ -127,8 +127,8 @@ function printFileListing($path = "./", $absPath, $pattern = "*", $excluded = ar
 	$iconAsc  = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAGklEQVR42mJgZGRkgGAGBhABohigJBAABBgAATAADUnnWMkAAAAASUVORK5CYII=";
 	$iconDesc = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAF0lEQVR42mJggAJGKMkIYjCCaDAGCDAAAJAADcpaiWkAAAAASUVORK5CYII=";
 	
-	echo "<h1><a href=\"" . $abspath . "\">Index of " . $abspath . "</a></h1>\n";
-	echo "<p><a href=\"" . parentDirectory($abspath) . "\">&larr; Parent directory</a></p>\n";
+	echo "<h1><a href=\"" . $absPath . "\">Index of " . $absPath . "</a></h1>\n";
+	echo "<p><a href=\"" . parentDirectory($absPath) . "\">&larr; Parent directory</a></p>\n";
 	echo "<table>\n";
 	echo "\t<tr>\n\t\t<th></th>\n";
 	
@@ -156,7 +156,7 @@ function printFileListing($path = "./", $absPath, $pattern = "*", $excluded = ar
     $class = "even";
 	foreach ($files as $index => $file) {
 		$name     = basename($file);
-		$url      = $abspath . "/" . rawurlencode($name);
+		$url      = $absPath . "/" . rawurlencode($name);
 		$isDir    = is_dir($file);
 		$type     = $isDir ? "Directory" : "File";
 		$icon     = $isDir ? $iconDir    : $iconFile;
