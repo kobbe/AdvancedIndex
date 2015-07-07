@@ -111,19 +111,19 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	switch ($sort) {
 	// size
 	case "s":
-		array_multisort($sizes, $direction, $files, $timestamps);
+		array_multisort($sizes, $direction, $files, $timestamps,$absmodified);
 		break;
 	// modified
 	case "m":
-		array_multisort($timestamps, $direction, $files, $sizes);
+		array_multisort($timestamps, $direction, $files, $sizes,$absmodified);
 		break;
     case "a":
-		array_multisort($timestamps, $direction, $files, $sizes);
+		array_multisort($absmodified, $direction, $files, $sizes,$timestamps);
 		break;         
 	// name
 	case "n":
 	default:
-		array_multisort($files, $direction, $sizes, $timestamps);
+		array_multisort($files, $direction, $sizes, $timestamps,$absmodified);
 		break;
 	}
 			
