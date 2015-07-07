@@ -171,7 +171,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 		$icon     = $isDir ? $iconDir    : $iconFile;
 		$size     = $isDir ? "-"         : formatSize($sizes[$index]);
 		$modified = date("Y-m-d H:i:s", $timestamps[$index]);
-        $amodifed = absmodified[$index];
+        $amodifed = $absmodified[$index];
 		$class    = $class == "even" ? "odd" : "even";
 		
 		echo "\t<tr class=\"$class\">\n" .
