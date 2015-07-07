@@ -2,6 +2,8 @@
 
 //Index page made by Hans Koberg - hans@koberg.nu - 2015
 //
+//Original index but with better coding
+//
 //built from the (crap coding) Simple Index - sindex.php made by Joni Rantala 2011
 
 main();
@@ -9,7 +11,7 @@ main();
 function main() {
 
 	$realtivePath = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
-    $absPath      =
+    $absPath      = absPath($path);
 	$sort         = !empty($_GET["s"]) && in_array($_GET["s"], array("n", "s", "m")) ? $_GET["s"] : "n";
 	$direction    = !empty($_GET["d"]) && $_GET["d"] == "d" ? SORT_DESC : SORT_ASC;
 
@@ -67,15 +69,15 @@ function printFooter() {
 <?php
 }
 
-function absPath() {
-	return rtrim(dirname($_SERVER["SCRIPT_NAME"]) . "/" . (empty($_GET["p"]) ? "" : ltrim($_GET["p"], "/")) , "/");
+function absPath($path) {
+	return rtrim(dirname($_SERVER["SCRIPT_NAME"]) . "/" . $path , "/");
 }
 
 function parentDirectory($abspath) {
 	//$path = currentPath();
-	$path = substr($path, 0, strrpos($path, "/"));
+	$abspath = substr($abspath, 0, strrpos($abspath, "/"));
 
-	return $path == "" ? "/" : $path;
+	return $abspath == "" ? "/" : $abspath;
 }
 
 function formatSize($size) {
@@ -125,10 +127,8 @@ function printFileListing($path = "./", $absPath, $pattern = "*", $excluded = ar
 	$iconAsc  = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAGklEQVR42mJgZGRkgGAGBhABohigJBAABBgAATAADUnnWMkAAAAASUVORK5CYII=";
 	$iconDesc = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAF0lEQVR42mJggAJGKMkIYjCCaDAGCDAAAJAADcpaiWkAAAAASUVORK5CYII=";
 	
-	#$parent = explode("/", currentPath());
-	
-	echo "<h1><a href=\"" . $path . "\">Index of " . $path . "</a></h1>\n";
-	echo "<p><a href=\"" . parentDirectory($path) . "\">&larr; Parent directory</a></p>\n";
+	echo "<h1><a href=\"" . $abspath . "\">Index of " . $abspath . "</a></h1>\n";
+	echo "<p><a href=\"" . parentDirectory($abspath) . "\">&larr; Parent directory</a></p>\n";
 	echo "<table>\n";
 	echo "\t<tr>\n\t\t<th></th>\n";
 	
@@ -156,7 +156,7 @@ function printFileListing($path = "./", $absPath, $pattern = "*", $excluded = ar
     $class = "even";
 	foreach ($files as $index => $file) {
 		$name     = basename($file);
-		$url      = $path . "/" . rawurlencode($name);
+		$url      = $abspath . "/" . rawurlencode($name);
 		$isDir    = is_dir($file);
 		$type     = $isDir ? "Directory" : "File";
 		$icon     = $isDir ? $iconDir    : $iconFile;

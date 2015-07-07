@@ -2,6 +2,9 @@
 
 //Index page made by Hans Koberg - hans@koberg.nu - 2015
 //
+//Admin index page that can traverse the whole accessable file system.
+// i.e stay on this page but update the path
+//
 //built from the (crap coding) Simple Index - sindex.php made by Joni Rantala 2011
 
 main();
@@ -121,7 +124,12 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	$iconDesc = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAF0lEQVR42mJggAJGKMkIYjCCaDAGCDAAAJAADcpaiWkAAAAASUVORK5CYII=";
 	
 	echo "<h1><a href=\"" . $pathNoSlash . "\">Index of " . $pathNoSlash . "</a></h1>\n";
-	echo "<p><a href=\"" . parentDirectory($path) . "\">&larr; Parent directory</a></p>\n";
+    
+    $parentLink = "?p=" .parentDirectory($path)
+    $parentLink .= $direction == SORT_DESC ? "&amp;d=d" : "";
+    $parentLink .= $sort != "n" ? "&amp;s=$sort" : "";
+    
+	echo "<p><a href=\"" . $parentLink . "\">&larr; Parent directory</a></p>\n";
 	echo "<table>\n";
 	echo "\t<tr>\n\t\t<th></th>\n";
 	
@@ -132,7 +140,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
 	);
 	
 	foreach ($labels as $key => $label) {
-		$link  = "?s=$key";
+		$link  = "?s=$key"; 
 		$image = "";
 		
 		if ($sort == $key) {
@@ -149,8 +157,13 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
     $class = "even";
 	foreach ($files as $index => $file) {
 		$name     = basename($file);
-		$url      = $path . rawurlencode($name);
-		$isDir    = is_dir($file);
+
+        
+        $isDir    = is_dir($file);
+		$url      = $isDir ? "?p=" : "";
+		$url     .= $path . rawurlencode($name);
+        $url     .= $direction == SORT_DESC ? "&amp;d=d" : "";
+        $url     .= $sort != "n" ? "&amp;s=$sort" : "";
 		$type     = $isDir ? "Directory" : "File";
 		$icon     = $isDir ? $iconDir    : $iconFile;
 		$size     = $isDir ? "-"         : formatSize($sizes[$index]);
