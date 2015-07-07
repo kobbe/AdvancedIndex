@@ -11,7 +11,7 @@ main();
 function main() {
 
 	$realtivePath = !empty($_GET["p"]) ? "./{$_GET["p"]}" : "./";
-    $absPath      = absPath($path);
+    $absPath      = absPath($realtivePath);
 	$sort         = !empty($_GET["s"]) && in_array($_GET["s"], array("n", "s", "m")) ? $_GET["s"] : "n";
 	$direction    = !empty($_GET["d"]) && $_GET["d"] == "d" ? SORT_DESC : SORT_ASC;
 
