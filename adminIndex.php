@@ -34,7 +34,7 @@ function printHeader($path) {
 <!DOCTYPE html>
 <html>
 <head>
-<title>Index of <?php echo $path; ?></title>
+<title>Index of <?php echo $path != "" ? $path : "/"; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Index page made by Hans Koberg with base by Joni Rantala">
 <style type="text/css">
@@ -162,6 +162,7 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
         $isDir    = is_dir($file);
 		$url      = $isDir ? "?p=" : "";
 		$url     .= $path . rawurlencode($name);
+        $url     .= $isDir ? "/" : "";
         $url     .= $direction == SORT_DESC ? "&amp;d=d" : "";
         $url     .= $sort != "n" ? "&amp;s=$sort" : "";
 		$type     = $isDir ? "Directory" : "File";
