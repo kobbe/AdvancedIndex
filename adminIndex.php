@@ -83,7 +83,9 @@ function formatSize($size) {
 function printFileListing($path = "./", $pattern = "*", $excluded = array(), $sort = "n", $direction = SORT_ASC) {
     $pathNoSlash = rtrim($path,"/");
 
-	$files = glob($_SERVER["DOCUMENT_ROOT"] . $path . $pattern);
+	$files1 = glob($_SERVER["DOCUMENT_ROOT"] . $path . $pattern);
+    $files2 = glob($_SERVER["DOCUMENT_ROOT"] . $path . ".*");
+    $files = array_merge($files1, $files2);
 	
 	$sizes      = array();
 	$timestamps = array();
