@@ -182,21 +182,21 @@ function printFileListing($path = "./", $pattern = "*", $excluded = array(), $so
             		 "\t\t<td><small>$amodifed</small></td>\n" .
 			 "\t\t<td> 
 				<form action=\"/functions/closed/tail.php\" method=\"post\" STYLE=\"margin: 0px; padding: 0px;\">
-				<input type=\"hidden\" name=\"fileName\" value=\"$name\">
+				<input type=\"hidden\" name=\"fileName\" value=\"$path$name\">
 				 <input type=\"hidden\" name=\"tail\" value=\"10\">
 				<input type=\"submit\" value=\"Tail\">
 				</form>
 				</td>\n" .
              "\t\t<td> 
 				<form action=\"/functions/closed/tail.php\" method=\"post\" STYLE=\"margin: 0px; padding: 0px;\">
-				<input type=\"hidden\" name=\"fileName\" value=\"$name\">
+				<input type=\"hidden\" name=\"fileName\" value=\"$path$name\">
 				 <input type=\"hidden\" name=\"tail\" value=\"100\">
 				<input type=\"submit\" value=\"Tail\">
 				</form>
 				</td>\n" .
              "\t\t<td> 
 				<form action=\"/functions/closed/tail.php\" method=\"post\" STYLE=\"margin: 0px; padding: 0px;\">
-				<input type=\"hidden\" name=\"fileName\" value=\"$name\">
+				<input type=\"hidden\" name=\"fileName\" value=\"$path$name\">
 				 <input type=\"text\" name=\"tail\" value=\"100\">
 				<input type=\"submit\" value=\"Tail\">
 				</form>
