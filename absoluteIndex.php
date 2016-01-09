@@ -2,6 +2,12 @@
 
 //Index page made by Hans Koberg - hans@koberg.nu - 2015
 //
+//The absolute index has the advatange that this file can be placed anywhere on the webserver 
+//and to use it only a single .htaccess is needeed. The .htaccess operates on the subfolders too.
+//The usage is perfectly safe even with the use of _GET since the webserver overwrites the path to show
+//with the actual address each time.
+//
+//
 //built from the (crap coding) Simple Index - sindex.php made by Joni Rantala 2011
 
 main();
